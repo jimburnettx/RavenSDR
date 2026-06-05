@@ -4,6 +4,16 @@ project(rtlsdr_android C CXX)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
 
+# Reproducible builds: strip machine-specific absolute paths from all debug
+# info so two builds on different machines produce identical .so files.
+add_compile_options(
+    -ffile-prefix-map=${CMAKE_SOURCE_DIR}/=
+    -ffile-prefix-map=${CMAKE_BINARY_DIR}/=
+)
+if(DEFINED CMAKE_ANDROID_NDK)
+    add_compile_options(-ffile-prefix-map=${CMAKE_ANDROID_NDK}/=ndk/)
+endif()
+
 # ────────────────────────────────────────────────────────────────────────────
 # Paths
 # ────────────────────────────────────────────────────────────────────────────

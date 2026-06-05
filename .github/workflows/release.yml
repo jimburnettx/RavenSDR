@@ -16,21 +16,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Pin SOURCE_DATE_EPOCH to the commit timestamp so every build of the
+      # same tag produces identical ZIP entry timestamps in the APK.
+      - name: Set SOURCE_DATE_EPOCH
+        run: echo "SOURCE_DATE_EPOCH=$(git log -1 --format=%ct)" >> "$GITHUB_ENV"
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-
-      # The project's custom gradlew checks $GRADLE_HOME first, then ~/gradle-8.6,
-      # then the PATH. Writing to GITHUB_ENV ensures all subsequent steps see it.
-      - name: Install Gradle 8.9
-        run: |
-          wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip \
-               -O /tmp/gradle-8.9-bin.zip
-          unzip -q /tmp/gradle-8.9-bin.zip -d "$HOME"
-          echo "GRADLE_HOME=$HOME/gradle-8.9" >> "$GITHUB_ENV"
 
       - name: Install Android SDK packages
         run: |
@@ -56,7 +52,7 @@ jobs:
           KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASS: ${{ secrets.KEY_PASS }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease --no-build-cache
 
       - name: Rename artifact with version tag
         run: |
