@@ -1,0 +1,88 @@
+name: Build Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write   # required to create GitHub Releases
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      # The project's custom gradlew checks $GRADLE_HOME first, then ~/gradle-8.6,
+      # then the PATH. Writing to GITHUB_ENV ensures all subsequent steps see it.
+      - name: Install Gradle 8.9
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip \
+               -O /tmp/gradle-8.9-bin.zip
+          unzip -q /tmp/gradle-8.9-bin.zip -d "$HOME"
+          echo "GRADLE_HOME=$HOME/gradle-8.9" >> "$GITHUB_ENV"
+
+      - name: Install Android SDK packages
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+                --licenses > /dev/null 2>&1 || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-36"   \
+            "build-tools;36.0.0"     \
+            "ndk;27.2.12479018"      \
+            "cmake;3.22.1"
+
+      # Decode the base64 keystore secret and expose the path + passwords as
+      # env vars that build.gradle's signingConfigs.release block reads.
+      - name: Decode keystore
+        env:
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+        run: |
+          python3 -c "import base64,os; raw=os.environ['SIGNING_KEY']; c=''.join(raw.split()); print('SIGNING_KEY length:',len(c),'chars (expected ~5884)'); d=base64.b64decode(c); print('Decoded keystore:',len(d),'bytes (expected ~4408)'); open('/tmp/release.jks','wb').write(d)"
+          echo "KEYSTORE_PATH=/tmp/release.jks" >> "$GITHUB_ENV"
+
+      - name: Build signed APK
+        env:
+          KEYSTORE_PASS: ${{ secrets.KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASS: ${{ secrets.KEY_PASS }}
+        run: ./gradlew assembleRelease
+
+      - name: Rename artifact with version tag
+        run: |
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -1)
+          cp "$APK" "RavenSDR-${{ github.ref_name }}.apk"
+
+      - name: Generate SHA-256 checksum
+        run: |
+          sha256sum "RavenSDR-${{ github.ref_name }}.apk" > "RavenSDR-${{ github.ref_name }}.apk.sha256"
+          APK_HASH=$(cut -d' ' -f1 "RavenSDR-${{ github.ref_name }}.apk.sha256")
+          echo "APK_HASH=$APK_HASH" >> "$GITHUB_ENV"
+
+      # Verify the APK: download it and its .sha256 file, then run: sha256sum -c RavenSDR-<version>.apk.sha256
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "RavenSDR ${{ github.ref_name }}"
+          body: |
+            ## SHA-256 Checksum
+
+            Verify the download with `sha256sum -c RavenSDR-${{ github.ref_name }}.apk.sha256` (Linux/macOS) or `CertUtil -hashfile RavenSDR-${{ github.ref_name }}.apk SHA256` (Windows).
+
+            | File | SHA-256 |
+            |------|---------|
+            | `RavenSDR-${{ github.ref_name }}.apk` | `${{ env.APK_HASH }}` |
+          files: |
+            RavenSDR-${{ github.ref_name }}.apk
+            RavenSDR-${{ github.ref_name }}.apk.sha256
+          generate_release_notes: true

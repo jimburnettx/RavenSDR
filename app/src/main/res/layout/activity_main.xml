@@ -1,0 +1,934 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#000000">
+
+    <!-- Waterfall: 65% on EXPLORE tab (updated dynamically in showTab) -->
+    <com.jamesburnetthq.ravensdr.WaterfallView
+        android:id="@+id/waterfallView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.65"/>
+
+    <!-- 1 dp separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#333333"/>
+
+    <!-- Bottom half: tabbed panel -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:background="#080808">
+
+        <!-- Tab buttons row -->
+        <LinearLayout
+            android:id="@+id/tabBar"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:background="#111111">
+
+            <Button
+                android:id="@+id/btnTabControls"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="EXPLORE"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#225522"
+                android:stateListAnimator="@null"/>
+
+            <Button
+                android:id="@+id/btnTabAlert"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="ALARM"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:backgroundTint="#1A1A1A"
+                android:stateListAnimator="@null"/>
+
+            <Button
+                android:id="@+id/btnTabConsole"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="TERM"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:backgroundTint="#1A1A1A"
+                android:stateListAnimator="@null"/>
+
+            <Button
+                android:id="@+id/btnTabListen"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="LISTEN"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA"
+                android:backgroundTint="#1A1A1A"
+                android:stateListAnimator="@null"/>
+
+        </LinearLayout>
+
+        <!-- Tab content area -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <!-- ── Controls tab (default visible) ── -->
+            <LinearLayout
+                android:id="@+id/tabControls"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="visible">
+
+                <!-- Frequency + Status row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="6dp">
+
+                    <TextView
+                        android:id="@+id/tvCenterFreq"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="462.625 MHz"
+                        android:textColor="#00FF88"
+                        android:textSize="15sp"
+                        android:fontFamily="monospace"/>
+
+                    <TextView
+                        android:id="@+id/tvStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="No device"
+                        android:textColor="#FF8800"
+                        android:textSize="13sp"
+                        android:gravity="end"
+                        android:fontFamily="monospace"/>
+
+                </LinearLayout>
+
+                <!-- Band row 1: GMRS  GMRSR  FRS  MESH  APRS -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnGmrs"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="GMRS"
+                        android:textSize="10sp"
+                        android:backgroundTint="#225522"
+                        android:textColor="#FFFFFF"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnGmrsR"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="GMRSR"
+                        android:textSize="10sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnFrs"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="FRS"
+                        android:textSize="10sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnMesh"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="MESH"
+                        android:textSize="10sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnAprs"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="APRS"
+                        android:textSize="10sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+
+                <!-- Band row 2: FOBS  MIC  CB  + gain toggle -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="2dp">
+
+                    <Button
+                        android:id="@+id/btnFobs"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="FOBS"
+                        android:textSize="11sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnMic"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="MIC"
+                        android:textSize="11sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnCb"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="CB"
+                        android:textSize="11sp"
+                        android:backgroundTint="#1A1A1A"
+                        android:textColor="#888888"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnGainMode"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="Manual"
+                        android:textSize="11sp"
+                        android:backgroundTint="#1A1A3A"
+                        android:textColor="#8888FF"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+
+                <!-- Active band description -->
+                <TextView
+                    android:id="@+id/tvActiveChannel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="GMRS · CH 1–7 / 15–22"
+                    android:textColor="#666666"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="2dp"/>
+
+                <!-- Sample rate info -->
+                <TextView
+                    android:id="@+id/tvSampleRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="2.048 MSPS · 2.048 MHz BW"
+                    android:textColor="#555555"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:paddingTop="6dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#222222"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <!-- Manual frequency entry -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="FREQUENCY"
+                    android:textColor="#555555"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:paddingBottom="4dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <EditText
+                        android:id="@+id/etControlsFreq"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:hint="MHz"
+                        android:inputType="numberDecimal"
+                        android:textColor="#CCCCCC"
+                        android:textColorHint="#444444"
+                        android:textSize="14sp"
+                        android:fontFamily="monospace"
+                        android:background="#111111"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
+                        android:singleLine="true"/>
+
+                    <Button
+                        android:id="@+id/btnControlsTune"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="6dp"
+                        android:text="TUNE"
+                        android:textSize="11sp"
+                        android:textColor="#00FF88"
+                        android:backgroundTint="#112211"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+
+                <!-- Step size + all nav buttons on one compact row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp">
+
+                    <Spinner
+                        android:id="@+id/spinnerSwipeStep"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
+                        android:background="#111111"
+                        android:popupBackground="#111111"/>
+
+                    <Button
+                        android:id="@+id/btnNavScanDown"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="◀◀"
+                        android:textSize="12sp"
+                        android:textColor="#FFAA44"
+                        android:backgroundTint="#1A1100"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnNavStepDown"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="◀"
+                        android:textSize="12sp"
+                        android:textColor="#CCCCCC"
+                        android:backgroundTint="#151515"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnNavStepUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="▶"
+                        android:textSize="12sp"
+                        android:textColor="#CCCCCC"
+                        android:backgroundTint="#151515"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnNavScanUp"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="▶▶"
+                        android:textSize="12sp"
+                        android:textColor="#FFAA44"
+                        android:backgroundTint="#1A1100"
+                        android:stateListAnimator="@null"/>
+
+                    <Button
+                        android:id="@+id/btnNavStop"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="■"
+                        android:textSize="12sp"
+                        android:textColor="#FF4444"
+                        android:backgroundTint="#1A0000"
+                        android:stateListAnimator="@null"
+                        android:visibility="invisible"/>
+
+                </LinearLayout>
+
+                <!-- Scan speed: label + spinner on one compact row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SCAN"
+                        android:textColor="#555555"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:paddingEnd="6dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerScanSpeed"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="#111111"
+                        android:popupBackground="#111111"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+
+            <!-- ── Console tab (hidden by default) ── -->
+            <ScrollView
+                android:id="@+id/tabConsole"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="#050505">
+
+                <TextView
+                    android:id="@+id/tvConsole"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#00CC66"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:padding="6dp"
+                    android:lineSpacingExtra="2dp"/>
+
+            </ScrollView>
+
+            <!-- ── Alert tab (hidden by default) ── -->
+            <LinearLayout
+                android:id="@+id/tabAlert"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ALARM"
+                    android:textColor="#00FF88"
+                    android:textSize="13sp"
+                    android:fontFamily="monospace"
+                    android:letterSpacing="0.12"/>
+
+                <CheckBox
+                    android:id="@+id/chkAlertSound"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Audible alert"
+                    android:textColor="#888888"
+                    android:textSize="12sp"
+                    android:fontFamily="monospace"
+                    android:checked="false"
+                    android:buttonTint="#00FF88"
+                    android:paddingTop="6dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SENSITIVITY"
+                    android:textColor="#555555"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="2dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Low"
+                        android:textColor="#444444"
+                        android:textSize="10sp"
+                        android:paddingEnd="6dp"/>
+
+                    <SeekBar
+                        android:id="@+id/seekBarSensitivity"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:progress="20"
+                        android:progressTint="#00AA55"
+                        android:thumbTint="#00FF88"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="High"
+                        android:textColor="#444444"
+                        android:textSize="10sp"
+                        android:paddingStart="6dp"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tvSensitivityLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Medium  ·  15 dB threshold"
+                    android:textColor="#447744"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:paddingTop="2dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#222222"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="STATUS"
+                    android:textColor="#555555"
+                    android:textSize="10sp"
+                    android:fontFamily="monospace"
+                    android:paddingBottom="2dp"/>
+
+                <TextView
+                    android:id="@+id/tvAlertStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="● Monitoring"
+                    android:textColor="#446644"
+                    android:textSize="13sp"
+                    android:fontFamily="monospace"/>
+
+                <TextView
+                    android:id="@+id/tvLastAlert"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="#335533"
+                    android:textSize="11sp"
+                    android:fontFamily="monospace"
+                    android:paddingTop="4dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#222222"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="6dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="4dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="RECENT ALERTS"
+                        android:textColor="#555555"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"/>
+
+                    <Button
+                        android:id="@+id/btnClearAlerts"
+                        android:layout_width="wrap_content"
+                        android:layout_height="28dp"
+                        android:text="CLEAR"
+                        android:textSize="9sp"
+                        android:textColor="#FF4444"
+                        android:backgroundTint="#1A0000"
+                        android:stateListAnimator="@null"/>
+
+                </LinearLayout>
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/llAlertHistory"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="2dp"/>
+
+                </ScrollView>
+
+            </LinearLayout>
+
+            <!-- ── Listen tab (hidden by default) ── -->
+            <ScrollView
+                android:id="@+id/tabListen"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                android:background="#080808">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="LISTEN"
+                        android:textColor="#00FF88"
+                        android:textSize="13sp"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.12"/>
+
+                    <!-- Frequency input + Listen / Stop -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingTop="8dp">
+
+                        <EditText
+                            android:id="@+id/etListenFreq"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:hint="Frequency (MHz)"
+                            android:inputType="numberDecimal"
+                            android:textColor="#CCCCCC"
+                            android:textColorHint="#444444"
+                            android:textSize="13sp"
+                            android:fontFamily="monospace"
+                            android:background="#111111"
+                            android:paddingStart="8dp"
+                            android:paddingEnd="8dp"
+                            android:singleLine="true"/>
+
+                        <Button
+                            android:id="@+id/btnListenStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="6dp"
+                            android:text="LISTEN"
+                            android:textSize="11sp"
+                            android:textColor="#00FF88"
+                            android:backgroundTint="#112211"
+                            android:stateListAnimator="@null"/>
+
+                        <Button
+                            android:id="@+id/btnListenStop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="4dp"
+                            android:text="STOP"
+                            android:textSize="11sp"
+                            android:textColor="#FF4444"
+                            android:backgroundTint="#1A0000"
+                            android:stateListAnimator="@null"/>
+
+                    </LinearLayout>
+
+                    <!-- Modulation selector -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="MODULATION"
+                        android:textColor="#555555"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="2dp"/>
+
+                    <Spinner
+                        android:id="@+id/spinnerModulation"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="#111111"
+                        android:popupBackground="#111111"/>
+
+                    <!-- Status + signal -->
+                    <TextView
+                        android:id="@+id/tvListenStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="● Idle"
+                        android:textColor="#446644"
+                        android:textSize="13sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="8dp"/>
+
+                    <TextView
+                        android:id="@+id/tvListenSignal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="#335533"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="2dp"/>
+
+                    <TextView
+                        android:id="@+id/tvScanStatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textColor="#447744"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="2dp"/>
+
+                    <!-- divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#222222"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Squelch slider -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SQUELCH"
+                        android:textColor="#555555"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:paddingBottom="2dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Open"
+                            android:textColor="#444444"
+                            android:textSize="10sp"
+                            android:paddingEnd="6dp"/>
+
+                        <SeekBar
+                            android:id="@+id/seekBarSquelch"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:max="20"
+                            android:progress="5"
+                            android:progressTint="#00AA55"
+                            android:thumbTint="#00FF88"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Tight"
+                            android:textColor="#444444"
+                            android:textSize="10sp"
+                            android:paddingStart="6dp"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvSquelchLabel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Level 5"
+                        android:textColor="#447744"
+                        android:textSize="11sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="2dp"/>
+
+                    <!-- divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#222222"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Band Monitor section -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="BAND MONITOR"
+                        android:textColor="#00FF88"
+                        android:textSize="13sp"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.12"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Listen to all channels at once — locks to active channel automatically"
+                        android:textColor="#446644"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="6dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnMonitorGmrs"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="GMRS"
+                            android:textSize="11sp"
+                            android:textColor="#88FF88"
+                            android:backgroundTint="#1A2A1A"
+                            android:stateListAnimator="@null"/>
+
+                        <Button
+                            android:id="@+id/btnMonitorFrs"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="FRS 467"
+                            android:textSize="11sp"
+                            android:textColor="#AAFFAA"
+                            android:backgroundTint="#152215"
+                            android:stateListAnimator="@null"/>
+
+                        <Button
+                            android:id="@+id/btnMonitorCb"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="CB"
+                            android:textSize="11sp"
+                            android:textColor="#88AAFF"
+                            android:backgroundTint="#1A1A2A"
+                            android:stateListAnimator="@null"/>
+
+                    </LinearLayout>
+
+                    <!-- divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#222222"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="8dp"/>
+
+                    <!-- Playlist -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="PLAYLIST"
+                        android:textColor="#00FF88"
+                        android:textSize="13sp"
+                        android:fontFamily="monospace"
+                        android:letterSpacing="0.12"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Save frequencies and play checked ones simultaneously"
+                        android:textColor="#446644"
+                        android:textSize="10sp"
+                        android:fontFamily="monospace"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="6dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/btnOpenPlaylist"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:text="MANAGE"
+                            android:textSize="11sp"
+                            android:textColor="#88AAFF"
+                            android:backgroundTint="#111122"
+                            android:stateListAnimator="@null"/>
+
+                        <Button
+                            android:id="@+id/btnPlayPlaylist"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:text="PLAY LIST"
+                            android:textSize="11sp"
+                            android:textColor="#00FF88"
+                            android:backgroundTint="#112211"
+                            android:stateListAnimator="@null"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </ScrollView>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

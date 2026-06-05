@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RavenSDR</string>
+    <string name="usb_permission_title">USB Device Access</string>
+    <string name="usb_permission_message">Allow RavenSDR to access the RTL-SDR dongle?</string>
+    <string name="no_device_found">No RTL-SDR device found. Connect your RTL-SDR V4 dongle.</string>
+    <string name="device_connected">RTL-SDR connected</string>
+    <string name="device_disconnected">RTL-SDR disconnected</string>
+</resources>

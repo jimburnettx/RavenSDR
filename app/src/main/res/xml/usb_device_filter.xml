@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- RTL2832U variants — Vendor ID 0x0BDA = Realtek Semiconductor Corp.
+         Decimal vendor-id: 0x0BDA = 3034 -->
+    <usb-device vendor-id="3034" product-id="10290"/> <!-- 0x2832 standard RTL2832U    -->
+    <usb-device vendor-id="3034" product-id="10296"/> <!-- 0x2838 RTL2838              -->
+    <usb-device vendor-id="3034" product-id="10289"/> <!-- 0x2831                      -->
+    <usb-device vendor-id="3034" product-id="10291"/> <!-- 0x2833                      -->
+    <usb-device vendor-id="3034" product-id="10295"/> <!-- 0x2837                      -->
+    <usb-device vendor-id="3034" product-id="10312"/> <!-- 0x2848 RTL-SDR Blog V4      -->
+</resources>

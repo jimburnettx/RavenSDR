@@ -1,0 +1,44 @@
+PRIVACY POLICY — RavenSDR
+Last updated: June 2026
+
+RavenSDR is a Software Defined Radio (SDR) receiver application for Android.
+This policy describes how the app handles your information.
+
+DATA COLLECTION
+RavenSDR does not collect, transmit, store, or share any personal data.
+The app has no internet permission and cannot send data of any kind to
+any server, third party, or developer.
+
+DATA STORED ON YOUR DEVICE
+The app saves the following information locally on your device only:
+  - Playlist entries you create (frequency name, frequency, modulation type)
+  - Alert sensitivity setting
+
+This data is stored using Android's standard local storage (SharedPreferences)
+and never leaves your device.
+
+HARDWARE ACCESS
+The app accesses a USB-connected RTL-SDR hardware dongle to receive radio
+signals. No audio is recorded or transmitted. All received radio signals are
+processed locally in real time and are not saved or shared.
+
+THIRD-PARTY SERVICES
+RavenSDR uses no third-party analytics, advertising, crash reporting, or
+tracking services.
+
+THIRD-PARTY LIBRARIES
+The app uses the following open-source libraries, none of which collect data:
+  - AndroidX AppCompat (Google) — UI compatibility
+  - Material Components (Google) — UI components
+  - librtlsdr — RTL-SDR hardware driver
+  - libusb — USB communication
+  - KissFFT — Signal processing
+
+CHILDREN
+The app does not knowingly collect data from anyone, including children.
+
+CHANGES
+If this policy changes, the updated version will be posted with a new date.
+
+CONTACT
+For questions about this privacy policy, contact: jim@jimburnett.com
