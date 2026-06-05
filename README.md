@@ -120,7 +120,7 @@ sdkmanager.bat "ndk;27.2.12479018" "cmake;3.22.1"
 ### 3. Clone the Repository
 
 ```bash
-git clone https://github.com/jimburnettx/RavenSDR.git
+git clone https://github.com/JamesBurnettHQ/RavenSDR.git
 cd RavenSDR
 ```
 
