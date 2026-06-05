@@ -24,6 +24,13 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Install Gradle 8.9
+        run: |
+          wget -q https://services.gradle.org/distributions/gradle-8.9-bin.zip \
+               -O /tmp/gradle-8.9-bin.zip
+          unzip -q /tmp/gradle-8.9-bin.zip -d "$HOME"
+          echo "GRADLE_HOME=$HOME/gradle-8.9" >> "$GITHUB_ENV"
+
       - name: Install Android SDK packages
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
