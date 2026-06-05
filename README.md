@@ -6,6 +6,29 @@ Tested on **Android 14** and **Android 17 beta**.
 
 ---
 
+## Credits
+
+RavenSDR builds on the work of several open source projects:
+
+| Project | Author / Maintainer | License | Use in RavenSDR |
+|---------|-------------------|---------|-----------------|
+| [librtlsdr](https://github.com/osmocom/rtl-sdr) | Osmocom community | GPL-2.0 | RTL2832U chip initialisation and IQ sample streaming |
+| [libusb](https://libusb.info) | libusb contributors | LGPL-2.1 | USB Host communication on unrooted Android |
+| [KissFFT](https://github.com/mborgerding/kissfft) | Mark Borgerding | BSD-3-Clause | FFT for live spectrum and waterfall computation |
+| [SDRTrunk](https://github.com/DSheirer/sdrtrunk) | Dennis Sheirer | GPL-3.0 | Waterfall colour palette design |
+
+---
+
+## Screenshots
+
+<p float="left">
+  <img src="screenshots/ravensdr-1.png" width="45%" alt="Explore tab — waterfall and band presets" />
+  &nbsp;&nbsp;
+  <img src="screenshots/ravensdr-2.png" width="45%" alt="Listen tab — FM demodulation and band monitor" />
+</p>
+
+---
+
 ## Table of Contents
 
 - [Features](#features)
@@ -21,14 +44,26 @@ Tested on **Android 14** and **Android 17 beta**.
 
 ## Features
 
+### Explore
 - **Live waterfall display** — colour-mapped FFT spectrum updated in real time at 2.048 MSPS
 - **Band presets** — one-tap access to GMRS (CH 1–7, 15–22), GMRS repeater inputs, FRS (CH 8–14), CB (40 channels), APRS 2m, 915 MHz ISM / Meshtastic, 434 MHz FOBS/LoRa, and 650 MHz wireless mics
-- **Explore mode** — tune anywhere from 500 kHz to 1766 MHz in configurable steps
-- **Listen mode** — NFM and AM demodulation with adjustable squelch; wideband channel scanner that hunts across all channels in a band and locks when a signal is found
-- **Signal alerts** — configurable threshold with audible radar ping and alert history log (tap any entry to jump directly to that frequency in Listen mode)
-- **Bookmarks** — save/load named frequencies, shared between Explore and Listen tabs
+- **Explore mode** — tune anywhere from 500 kHz to 1766 MHz in configurable steps (100 Hz – 1 MHz)
+- **Wideband scan** — automatically sweeps across all channels in a band; configurable dwell time
+
+### Listen
+- **NFM and AM demodulation** — narrowband FM and amplitude modulation with real-time audio output
+- **Squelch control** — adjustable threshold silences the receiver between transmissions
+- **Band Monitor** — listens across all channels in a band simultaneously and locks when a signal is found
+- **Playlist** — save named frequencies and play them back sequentially or manage them as a list
+
+### Alarms
+- **Signal alerts** — configurable dB threshold triggers an audible radar ping
+- **Alert history log** — tap any entry to jump directly to that frequency in Listen mode
+
+### General
+- **Bookmarks** — save and load named frequencies, shared between Explore and Listen tabs
 - **AGC / manual gain** — toggle between automatic gain control and 30 dB fixed gain
-- **Auto-launch** — app launches automatically when an RTL-SDR dongle is connected via USB OTG
+- **Auto-launch** — app opens automatically when an RTL-SDR dongle is plugged in via USB OTG
 - **Supported hardware** — RTL2832U family: standard RTL2832U, RTL2838, RTL2831, RTL2833, RTL2837, and RTL-SDR Blog V4
 
 ---
@@ -112,7 +147,7 @@ cd RavenSDR
 # Debug build and install on connected device
 ./gradlew installDebug
 
-# Release APK (unsigned) — output in app/build/outputs/apk/release/
+# Release APK — requires KEYSTORE_PATH, KEYSTORE_PASS, KEY_ALIAS, KEY_PASS env vars
 ./gradlew assembleRelease
 
 # Windows
@@ -150,6 +185,7 @@ RavenSDR/
 │       └── res/
 │           ├── layout/activity_main.xml
 │           └── xml/usb_device_filter.xml   # RTL2832U USB VID/PID list
+├── screenshots/                      # App screenshots for README
 ├── build.gradle                      # Root Gradle file (AGP version)
 ├── settings.gradle                   # Project name, repository declarations
 ├── gradle.properties                 # JVM heap, AndroidX, parallel builds
