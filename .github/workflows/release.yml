@@ -74,21 +74,36 @@ jobs:
 
       # Verify the APK: download it and its .sha256 file, then run: sha256sum -c RavenSDR-<version>.apk.sha256
       # Tags with a suffix (-test, -rc) are marked as pre-releases and won't
-      # appear as "Latest" on the repo homepage.
+      # appear as "Latest" on the repo homepage. Using gh CLI creates the
+      # release and uploads assets atomically, avoiding immutable-release errors.
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          prerelease: ${{ contains(github.ref_name, '-') }}
-          name: ${{ contains(github.ref_name, '-test') && format('TEST BUILD {0}', github.ref_name) || contains(github.ref_name, '-rc') && format('RavenSDR {0} (Release Candidate)', github.ref_name) || format('RavenSDR {0}', github.ref_name) }}
-          body: |
-            ## SHA-256 Checksum
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          if [[ "$TAG" == *"-test"* ]]; then
+            TITLE="TEST BUILD $TAG"
+          elif [[ "$TAG" == *"-rc"* ]]; then
+            TITLE="RavenSDR $TAG (Release Candidate)"
+          else
+            TITLE="RavenSDR $TAG"
+          fi
 
-            Verify the download with `sha256sum -c RavenSDR-${{ github.ref_name }}.apk.sha256` (Linux/macOS) or `CertUtil -hashfile RavenSDR-${{ github.ref_name }}.apk SHA256` (Windows).
+          PRERELEASE=""
+          [[ "$TAG" == *"-"* ]] && PRERELEASE="--prerelease"
 
-            | File | SHA-256 |
-            |------|---------|
-            | `RavenSDR-${{ github.ref_name }}.apk` | `${{ env.APK_HASH }}` |
-          files: |
-            RavenSDR-${{ github.ref_name }}.apk
-            RavenSDR-${{ github.ref_name }}.apk.sha256
-          generate_release_notes: true
+          NOTES="## SHA-256 Checksum
+
+          Verify the download with \`sha256sum -c RavenSDR-${TAG}.apk.sha256\` (Linux/macOS) or \`CertUtil -hashfile RavenSDR-${TAG}.apk SHA256\` (Windows).
+
+          | File | SHA-256 |
+          |------|---------|
+          | \`RavenSDR-${TAG}.apk\` | \`${{ env.APK_HASH }}\` |"
+
+          gh release create "$TAG" \
+            --title "$TITLE" \
+            --notes "$NOTES" \
+            --generate-notes \
+            $PRERELEASE \
+            "RavenSDR-${TAG}.apk" \
+            "RavenSDR-${TAG}.apk.sha256"
