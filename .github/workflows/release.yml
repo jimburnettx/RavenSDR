@@ -73,10 +73,13 @@ jobs:
           echo "APK_HASH=$APK_HASH" >> "$GITHUB_ENV"
 
       # Verify the APK: download it and its .sha256 file, then run: sha256sum -c RavenSDR-<version>.apk.sha256
+      # Tags with a suffix (-test, -rc) are marked as pre-releases and won't
+      # appear as "Latest" on the repo homepage.
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          name: "RavenSDR ${{ github.ref_name }}"
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          name: ${{ contains(github.ref_name, '-test') && format('TEST BUILD {0}', github.ref_name) || contains(github.ref_name, '-rc') && format('RavenSDR {0} (Release Candidate)', github.ref_name) || format('RavenSDR {0}', github.ref_name) }}
           body: |
             ## SHA-256 Checksum
 
